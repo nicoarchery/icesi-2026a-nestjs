@@ -1,12 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Brand } from "src/brands/entities/brand.entity";
 
 @Entity()
 export class Car {
     @PrimaryGeneratedColumn('uuid')
     id: string; 
 
-    @Column('text')
-    brand: string; 
+    @ManyToOne(()=>Brand, (brand)=>brand.cars)
+    brand: string;
 
     @Column('varchar', {unique: true})
     model: string;

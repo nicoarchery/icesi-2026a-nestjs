@@ -4,12 +4,14 @@ import { Car } from './entities/car.entity';
 import { UpdateCarDto } from './dto/update-car.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { BrandsService } from 'src/brands/brands.service';
 
 @Injectable()
 export class CarsService {
 
     constructor(
         @InjectRepository(Car) private readonly carRepository: Repository<Car>,
+        private readonly brandService: BrandsService,
     ){}
     
     getAll(): Promise<Car[]> {
@@ -24,7 +26,8 @@ export class CarsService {
         return car;
     }
 
-    create(car: CreateCarDto): Promise<Car>{
+    async create(car: CreateCarDto): Promise<Car>{
+        const  brand  = await this.brandService.findOne(car.brand);
         const carNew: Car =  this.carRepository.create(car); 
         return this.carRepository.save(carNew);
     }
