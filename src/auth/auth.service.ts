@@ -5,11 +5,13 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor (
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService
   ){}
   async createUser(createUserDto: CreateUserDto){
     try {
@@ -40,7 +42,7 @@ export class AuthService {
         user_id: user.id, 
         email: user.email, 
         roles: user.roles,  
-        token: "TOKEN TEST"
+        token: this.jwtService.sign({user_id:user.id})
       }
 
     } catch (error) {
